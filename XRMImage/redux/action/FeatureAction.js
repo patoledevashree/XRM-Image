@@ -34,19 +34,18 @@ export const getAllFeatures = () => {
         headers: {'x-api-key': 'MV7PnHh2mC48n9n3oqKW3911T6Ch6gmd7xQJ0JQ6'},
       })
       .then((response) => {
-        console.log('response', response);
+        // console.log('response', response);
         const data = response.data.message;
         dispatch(getFeaturesSuccess(data));
       })
       .catch((error) => {
-        console.log('error', error.response);
+        // console.log('error', error.response);
         dispatch(getFeaturesFaliure(error));
       });
   };
 };
 
 export const UpdateFeatureList = (id) => {
-  console.log('action');
   return {
     type: UPDATE_FEATURE_LIST,
     Id: id,

@@ -6,7 +6,6 @@ import {UpdateFeatureList} from '../../redux/action/FeatureAction';
 
 function ExteriorFeatures(props) {
   const list = props.featureList;
-
   return (
     <View>
       {props.features.length !== 0
@@ -21,7 +20,7 @@ function ExteriorFeatures(props) {
                       marginTop: 20,
                     }}>
                     <CheckBox
-                      value={list.includes(item.name)}
+                      value={list.includes(item._id)}
                       tintColors={{true: 'crimson', false: 'black'}}
                       style={{width: 50}}
                       onValueChange={(val) => {

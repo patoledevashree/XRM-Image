@@ -36,12 +36,10 @@ const FeatureReducer = (state = initialState, action) => {
       };
     }
     case 'UPDATE_FEATURE_LIST': {
-      console.log('reducer');
       let temp = state.featureList;
       if (!temp.includes(action.Id)) {
         temp.push(action.Id);
       } else {
-        console.log('else');
         temp = temp.filter((item) => item !== action.Id);
       }
       console.log('temp', temp);

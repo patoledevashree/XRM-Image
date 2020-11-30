@@ -152,9 +152,10 @@ const styles = StyleSheet.create({
     shadowRadius: 2,
     elevation: 5,
     borderRadius: 5,
+    alignItems: 'center',
   },
   button: {
-    width: 300,
+    width: 270,
     height: 50,
     // borderWidth: 1,
     shadowColor: '#777',
@@ -162,9 +163,11 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.6,
     shadowRadius: 2,
     elevation: 2,
-    marginLeft: 35,
+    // marginLeft: 35,
     marginTop: 25,
     backgroundColor: 'crimson',
+    // justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 export default connect(mapStateToProps, mapDispatchToProps)(Home);
