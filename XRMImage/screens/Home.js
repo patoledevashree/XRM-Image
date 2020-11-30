@@ -4,7 +4,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome5';
 import {connect} from 'react-redux';
 import {getAllFeatures} from '../redux/action/FeatureAction';
 import {useNavigation} from '@react-navigation/native';
-import {ScrollView} from 'react-native-gesture-handler';
+import {ScrollView, TextInput} from 'react-native-gesture-handler';
 
 function Home(props) {
   useEffect(() => {
@@ -15,6 +15,12 @@ function Home(props) {
   return (
     <View>
       <ScrollView>
+        <View>
+          <TextInput
+            style={{width: 200}}
+            placeholder="Search By Vin No./Stock No."
+          />
+        </View>
         <View style={{...styles.cardWrapper, marginTop: 10}}>
           <View style={{...styles.card, height: 400}}>
             <View style={{paddingLeft: 30, paddingTop: 20}}>

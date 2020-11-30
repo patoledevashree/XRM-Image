@@ -1,10 +1,10 @@
 import React from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
 import Home from '../screens/Home';
-import LOGO from '../assests/images/logo.svg';
 import InteriorFeatures from '../screens/Features/InteriorFeatures';
 import ExteriorFeatures from '../screens/Features/ExteriorFeatures';
 import Media from '../screens/Features/Media';
+import {Image, View} from 'react-native';
 
 const Stack = createStackNavigator();
 
@@ -23,10 +23,15 @@ function HomeStack() {
           headerTintColor: 'white',
           headerTitleStyle: {
             fontSize: 25,
-            paddingLeft: 50,
+            marginLeft: 100,
           },
           headerLeft: () => (
-            <LOGO height={100} width={100} style={{paddingLeft: 20}} />
+            <View>
+              <Image
+                source={require('../assests/images/logo.png')}
+                style={{width: 120, height: 40, marginLeft: 20}}
+              />
+            </View>
           ),
         }}
       />
