@@ -5,6 +5,8 @@ import InteriorFeatures from '../screens/Features/InteriorFeatures';
 import ExteriorFeatures from '../screens/Features/ExteriorFeatures';
 import Media from '../screens/Features/Media';
 import {Image, View} from 'react-native';
+import InteriorImages from '../screens/Images/InteriorImages';
+import ExteriorImages from '../screens/Images/ExteriorImages';
 
 const Stack = createStackNavigator();
 
@@ -64,6 +66,30 @@ function HomeStack() {
         component={Media}
         options={{
           title: 'Media',
+          headerStyle: {
+            backgroundColor: 'crimson',
+          },
+          headerTintColor: 'white',
+        }}
+      />
+
+      <Stack.Screen
+        name="InteriorImages"
+        component={InteriorImages}
+        options={{
+          title: 'Interior Images',
+          headerStyle: {
+            backgroundColor: 'crimson',
+          },
+          headerTintColor: 'white',
+        }}
+      />
+
+      <Stack.Screen
+        name="ExteriorImages"
+        component={ExteriorImages}
+        options={{
+          title: 'Exterior Images',
           headerStyle: {
             backgroundColor: 'crimson',
           },

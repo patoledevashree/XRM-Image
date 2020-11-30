@@ -3,6 +3,7 @@ import {
   GET_FEATURES_SUCCESS,
   GET_FEATURES_FALIURE,
   UPDATE_FEATURE_LIST,
+  VIN_NUMBER,
 } from './types';
 import axios from 'axios';
 import {baseURL} from '../../shared/config';
@@ -49,5 +50,13 @@ export const UpdateFeatureList = (id) => {
   return {
     type: UPDATE_FEATURE_LIST,
     Id: id,
+  };
+};
+
+export const UpdateVinNumber = (vin) => {
+  console.log('action');
+  return {
+    type: VIN_NUMBER,
+    data: vin,
   };
 };

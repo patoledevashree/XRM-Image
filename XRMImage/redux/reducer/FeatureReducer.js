@@ -9,6 +9,7 @@ const initialState = {
   loading: true,
   error: '',
   featureList: [],
+  vin: '',
 };
 
 const FeatureReducer = (state = initialState, action) => {
@@ -46,6 +47,13 @@ const FeatureReducer = (state = initialState, action) => {
       return {
         ...state,
         featureList: temp,
+      };
+    }
+    case 'VIN_NUMBER': {
+      console.log('reducer');
+      return {
+        ...state,
+        vin: action.data,
       };
     }
     default:
