@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import {View, Text, StyleSheet, Image, TouchableOpacity} from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
 import ImagePicker from 'react-native-image-picker';
+// import ImagePicker from 'react-native-image-crop-picker';
 import axios from 'axios';
 import {baseURL, baseUrl} from '../../shared/config';
 import {submitImage} from '../../shared/ApiEndpoints';
@@ -44,11 +45,46 @@ function InteriorImages(props) {
       }
     });
   };
+  // const handelPhoto = (data) => {
+  //   ImagePicker.openPicker({
+  //     width: 300,
+  //     height: 400,
+  //     cropping: true,
+  //     showCropGuidelines: true,
+  //     mediaType: 'photo',
+  //     includeBase64: true,
+  //   }).then((image) => {
+  //     let str = image.path.split('/');
+  //     console.log(image);
+  //     console.log(str);
+  //     uploadImage(data, image);
+  //   });
+  //   // ImagePicker.openCropper({
+  //   //   path,
+  //   //   width: 300,
+  //   //   height: 350,
+  //   //   cropping: true,
+  //   //   includeBase64: true,
+  //   //   freeStyleCropEnabled: true,
+  //   //   disableCropperColorSetters: false,
+  //   //   enableRotationGesture: true,
+  //   //   mediaType: 'photo',
+  //   //   showCropGuidelines: true,
+
+  //   //   compressImageQuality: 1,
+  //   // }).then((image) => {
+  //   //   console.log(image);
+  //   // });
+  // };
+
   const uploadImage = (data, response) => {
     console.log('data', data);
     console.log('api called', props.vin);
     var formData = new FormData();
     console.log('response', response);
+    // let str = response.path.split('/');
+    // console.log(str);
+    // let fname = str[str.length - 1];
     const image = 'data:image/jpeg;base64,' + response.data;
     let obj = {[data]: response.fileName};
     console.log('obj', obj);
