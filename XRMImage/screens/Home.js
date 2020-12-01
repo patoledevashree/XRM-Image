@@ -65,12 +65,23 @@ function Home(props) {
   };
 
   const submitform = () => {
+    console.log(props.vin);
     axios
-      .post(`${baseURL}/${submitForm}/${props.vin}`, props.featureList, {
-        headers: {'x-api-key': 'MV7PnHh2mC48n9n3oqKW3911T6Ch6gmd7xQJ0JQ6'},
-      })
+      .post(
+        `${baseURL}/${submitForm}/${props.vin}`,
+        {
+          features: props.featureList,
+        },
+        {
+          headers: {
+            'x-api-key': 'MV7PnHh2mC48n9n3oqKW3911T6Ch6gmd7xQJ0JQ6',
+            'Content-Type': 'application/json',
+          },
+        },
+      )
       .then((response) => {
         console.log('response', response);
+        Toast.show('Data Submitted Successfully');
       })
       .catch((err) => {
         console.log('err', err.response);

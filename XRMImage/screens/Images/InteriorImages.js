@@ -52,14 +52,22 @@ function InteriorImages(props) {
     const image = 'data:image/jpeg;base64,' + response.data;
     let obj = {[data]: response.fileName};
     console.log('obj', obj);
-    formData.append(obj);
+    // formData.append(obj);
+    formData.append([data], {
+      uri: response.uri,
+      name: response.fileName,
+      type: 'image/jpeg',
+    });
     console.log(formData);
     if (props.vin === '') {
       Toast.show('Please enter Vin Number');
     } else {
       axios
         .put(`${baseURL}/${submitImage}/${props.vin}`, formData, {
-          headers: {'x-api-key': 'MV7PnHh2mC48n9n3oqKW3911T6Ch6gmd7xQJ0JQ6'},
+          headers: {
+            'x-api-key': 'MV7PnHh2mC48n9n3oqKW3911T6Ch6gmd7xQJ0JQ6',
+            'Content-Type': 'multipart/form-data;',
+          },
         })
         .then((response) => {
           console.log('response', response);

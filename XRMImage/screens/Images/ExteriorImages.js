@@ -61,7 +61,12 @@ function ExteriorImages(props) {
     // let obj = {[data]: response.fileName};
     let obj = {[data]: JSON.stringify(image)};
     console.log('obj', obj);
-    formData.append(obj);
+    formData.append([data], {
+      uri: response.uri,
+      name: response.fileName,
+      type: 'image/jpeg',
+    });
+    // formData.append(obj);
 
     console.log(formData);
     if (props.vin === '') {
@@ -69,7 +74,10 @@ function ExteriorImages(props) {
     } else {
       axios
         .put(`${baseURL}/${submitImage}/${props.vin}`, formData, {
-          headers: {'x-api-key': 'MV7PnHh2mC48n9n3oqKW3911T6Ch6gmd7xQJ0JQ6'},
+          headers: {
+            'x-api-key': 'MV7PnHh2mC48n9n3oqKW3911T6Ch6gmd7xQJ0JQ6',
+            'Content-Type': 'multipart/form-data;',
+          },
         })
         .then((response) => {
           console.log('response', response);
