@@ -1,5 +1,12 @@
 import React, {useState} from 'react';
-import {View, Text, StyleSheet, Image, TouchableOpacity} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  Dimensions,
+} from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
 import ImagePicker from 'react-native-image-picker';
 // import ImagePicker from 'react-native-image-crop-picker';
@@ -14,6 +21,7 @@ function InteriorImages(props) {
   const [sun_roof_if_applicable, setsun_roof_if_applicable] = useState('');
   const [back_up_camera, setback_up_camera] = useState('');
   const [navigation_system, setnavigation_system] = useState('');
+  const {width: winWidth, height: winHeight} = Dimensions.get('window');
 
   const handelPhoto = (data) => {
     console.log('photo');
@@ -120,6 +128,15 @@ function InteriorImages(props) {
         <View style={{...styles.cardWrapper, marginTop: 5}}>
           <View style={{...styles.card, height: 150, alignItems: 'center'}}>
             <TouchableOpacity
+              style={{
+                height: winHeight,
+                width: winWidth,
+                position: 'absolute',
+                left: 0,
+                top: 0,
+                right: 0,
+                bottom: 0,
+              }}
               onPress={() => {
                 handelPhoto('dash_view_from_rear_seat');
               }}>
