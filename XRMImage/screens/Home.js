@@ -13,7 +13,7 @@ import {useNavigation} from '@react-navigation/native';
 import {ScrollView, TextInput} from 'react-native-gesture-handler';
 import axios from 'axios';
 import {baseURL} from '../shared/config.js';
-import {getVehicleInfo} from '../shared/ApiEndpoints';
+import {getVehicleInfo, submitForm} from '../shared/ApiEndpoints';
 import Toast from 'react-native-simple-toast';
 import {RNCamera} from 'react-native-camera';
 
@@ -27,6 +27,7 @@ function Home(props) {
   const [result, setResult] = useState({});
   const [isLoading, setLoading] = useState(false);
   const [scan, setScan] = useState(false);
+  const [isDisabled, setDisable] = useState(true);
 
   const handleSearch = () => {
     console.log('seacrch');
@@ -53,6 +54,7 @@ function Home(props) {
         let vin = response.data.message.VIN;
         console.log('vin', vin);
         props.UpdateVinNumber(vin);
+        setDisable(false);
         setLoading(false);
       })
       .catch((err) => {
@@ -60,6 +62,22 @@ function Home(props) {
         Toast.show(err.response.data.message);
         setLoading(false);
       });
+  };
+
+  const submitform = () => {
+    axios
+      .post(`${baseURL}/${submitForm}/${props.vin}`, props.featureList, {
+        headers: {'x-api-key': 'MV7PnHh2mC48n9n3oqKW3911T6Ch6gmd7xQJ0JQ6'},
+      })
+      .then((response) => {
+        console.log('response', response);
+      })
+      .catch((err) => {
+        console.log('err', err.response);
+      });
+  };
+  const onSuccess = (e) => {
+    console.log('success', e);
   };
   return (
     <View>
@@ -100,6 +118,8 @@ function Home(props) {
               size={30}
               color={'crimson'}
               onPress={() => {
+                console.log('qr code');
+                console.log(scan);
                 setScan(true);
               }}
             />
@@ -283,8 +303,35 @@ function Home(props) {
             </TouchableOpacity>
           </View>
         </View>
+        <TouchableOpacity
+          disabled={isDisabled}
+          onPress={() => {
+            submitform();
+          }}>
+          <View style={{justifyContent: 'center', alignItems: 'center'}}>
+            <View
+              style={{
+                width: 150,
+                height: 40,
+                borderRadius: 3,
+                backgroundColor: isDisabled ? '#607D8B' : 'crimson',
+                marginBottom: 20,
+              }}>
+              <Text
+                style={{
+                  color: 'white',
+                  textAlign: 'center',
+                  marginTop: 5,
+                  fontSize: 18,
+                }}>
+                Submit
+              </Text>
+            </View>
+          </View>
+        </TouchableOpacity>
       </ScrollView>
-      {scan === true ? (
+      {console.log(scan)}
+      {scan == true ? (
         <RNCamera
           // ref={(ref) => (this.camera = ref)}
           type={RNCamera.Constants.Type.back}
@@ -293,7 +340,8 @@ function Home(props) {
           permissionDialogMessage={
             'We need your permission to use your camera phone'
           }
-          style={{flex: 1, width: '100%'}}></RNCamera>
+          onBarCodeRead={onSuccess}
+          style={{height: '100%', width: '100%'}}></RNCamera>
       ) : null}
     </View>
   );
@@ -302,6 +350,8 @@ function Home(props) {
 const mapStateToProps = (state) => {
   return {
     features: state.featureReducer.features,
+    vin: state.featureReducer.vin,
+    featureList: state.featureReducer.featureList,
   };
 };
 const mapDispatchToProps = (dispatch) => {

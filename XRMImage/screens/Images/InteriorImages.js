@@ -1,55 +1,191 @@
-import React from 'react';
-import {View, Text, StyleSheet, Image} from 'react-native';
+import React, {useState} from 'react';
+import {View, Text, StyleSheet, Image, TouchableOpacity} from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
+import ImagePicker from 'react-native-image-picker';
+import axios from 'axios';
+import {baseURL, baseUrl} from '../../shared/config';
+import {submitImage} from '../../shared/ApiEndpoints';
+import {connect} from 'react-redux';
+import Toast from 'react-native-simple-toast';
 
-function InteriorImages() {
+function InteriorImages(props) {
+  const [dash_view_from_rear_seat, setdash_view_from_rear_seat] = useState('');
+  const [sun_roof_if_applicable, setsun_roof_if_applicable] = useState('');
+  const [back_up_camera, setback_up_camera] = useState('');
+  const [navigation_system, setnavigation_system] = useState('');
+
+  const handelPhoto = (data) => {
+    console.log('photo');
+    const options = {
+      title: 'Select Image',
+
+      allowsEditing: true,
+      maxWidth: 500,
+      maxHeight: 500,
+    };
+    ImagePicker.showImagePicker(options, (response) => {
+      // ImagePicker.launchImageLibrary(options, (response) => {
+      console.log(response);
+      if (response.uri) {
+        console.log(response);
+        if (data === 'dash_view_from_rear_seat') {
+          setdash_view_from_rear_seat(response);
+        }
+        if (data === 'sun_roof_if_applicable') {
+          setsun_roof_if_applicable(response);
+        }
+        if (data === 'back_up_camera') {
+          setback_up_camera(response);
+        }
+        if (data === 'navigation_system') {
+          setnavigation_system(response);
+        }
+        uploadImage(data, response);
+      }
+    });
+  };
+  const uploadImage = (data, response) => {
+    console.log('data', data);
+    console.log('api called', props.vin);
+    var formData = new FormData();
+    console.log('response', response);
+    const image = 'data:image/jpeg;base64,' + response.data;
+    let obj = {[data]: response.fileName};
+    console.log('obj', obj);
+    formData.append(obj);
+    console.log(formData);
+    if (props.vin === '') {
+      Toast.show('Please enter Vin Number');
+    } else {
+      axios
+        .put(`${baseURL}/${submitImage}/${props.vin}`, formData, {
+          headers: {'x-api-key': 'MV7PnHh2mC48n9n3oqKW3911T6Ch6gmd7xQJ0JQ6'},
+        })
+        .then((response) => {
+          console.log('response', response);
+          Toast.show('Image Saved!!');
+        })
+        .catch((err) => {
+          console.log('err', err.response.data);
+        });
+    }
+  };
   return (
     <View>
       <ScrollView>
         <View style={{...styles.cardWrapper, marginTop: 5}}>
           <View style={{...styles.card, height: 150, alignItems: 'center'}}>
-            <Text style={{fontWeight: 'bold', fontSize: 20, marginTop: 10}}>
-              Dash View From Rear Seat
-            </Text>
-            <Image
-              source={require('../../assests/images/dash_view_from_rear_seat.png')}
-              style={{height: 100, width: 150}}
-            />
-          </View>
-        </View>
-        <View style={{...styles.cardWrapper, marginTop: 5}}>
-          <View style={{...styles.card, height: 150, alignItems: 'center'}}>
-            <Text style={{fontWeight: 'bold', fontSize: 20, marginTop: 10}}>
-              Sun Roof (if applicable)
-            </Text>
-            <Image
-              source={require('../../assests/images/sun_roof_if_applicable.png')}
-              style={{height: 80, width: 150, marginTop: 10}}
-            />
-          </View>
-        </View>
-
-        <View style={{...styles.cardWrapper, marginTop: 5}}>
-          <View style={{...styles.card, height: 150, alignItems: 'center'}}>
-            <Text style={{fontWeight: 'bold', fontSize: 20, marginTop: 10}}>
-              Back Up camera (if applicable)
-            </Text>
-            <Image
-              source={require('../../assests/images/back_up_camera.png')}
-              style={{height: 80, width: 100, marginTop: 10}}
-            />
+            <TouchableOpacity
+              onPress={() => {
+                handelPhoto('dash_view_from_rear_seat');
+              }}>
+              <View style={{alignItems: 'center'}}>
+                <Text style={{fontWeight: 'bold', fontSize: 20, marginTop: 10}}>
+                  Dash View From Rear Seat
+                </Text>
+                {!dash_view_from_rear_seat ? (
+                  <Image
+                    source={require('../../assests/images/dash_view_from_rear_seat.png')}
+                    style={{height: 80, width: 150}}
+                  />
+                ) : (
+                  <Image
+                    source={{uri: dash_view_from_rear_seat.uri}}
+                    style={{height: 80, width: 150}}
+                  />
+                )}
+                <Text style={{fontWeight: 'bold', fontSize: 15, marginTop: 10}}>
+                  Click Here to Upload
+                </Text>
+              </View>
+            </TouchableOpacity>
           </View>
         </View>
 
         <View style={{...styles.cardWrapper, marginTop: 5}}>
           <View style={{...styles.card, height: 150, alignItems: 'center'}}>
-            <Text style={{fontWeight: 'bold', fontSize: 20, marginTop: 10}}>
-              Navigation System (if applicable)
-            </Text>
-            <Image
-              source={require('../../assests/images/navigation_system.png')}
-              style={{height: 50, width: 50, marginTop: 20}}
-            />
+            <TouchableOpacity
+              onPress={() => {
+                handelPhoto('sun_roof_if_applicable');
+              }}>
+              <View style={{alignItems: 'center'}}>
+                <Text style={{fontWeight: 'bold', fontSize: 20, marginTop: 10}}>
+                  Sun Roof (if applicable)
+                </Text>
+                {!sun_roof_if_applicable ? (
+                  <Image
+                    source={require('../../assests/images/sun_roof_if_applicable.png')}
+                    style={{height: 70, width: 150, marginTop: 10}}
+                  />
+                ) : (
+                  <Image
+                    source={{uri: dash_view_from_rear_seat.uri}}
+                    style={{height: 70, width: 150, marginTop: 10}}
+                  />
+                )}
+                <Text style={{fontWeight: 'bold', fontSize: 15, marginTop: 10}}>
+                  Click Here to Upload
+                </Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        <View style={{...styles.cardWrapper, marginTop: 5}}>
+          <View style={{...styles.card, height: 150, alignItems: 'center'}}>
+            <TouchableOpacity
+              onPress={() => {
+                handelPhoto('back_up_camera');
+              }}>
+              <View style={{alignItems: 'center'}}>
+                <Text style={{fontWeight: 'bold', fontSize: 20, marginTop: 10}}>
+                  Back Up camera (if applicable)
+                </Text>
+                {!back_up_camera ? (
+                  <Image
+                    source={require('../../assests/images/back_up_camera.png')}
+                    style={{height: 80, width: 100, marginTop: 10}}
+                  />
+                ) : (
+                  <Image
+                    source={{uri: back_up_camera.uri}}
+                    style={{height: 80, width: 100, marginTop: 10}}
+                  />
+                )}
+                <Text style={{fontWeight: 'bold', fontSize: 15, marginTop: 5}}>
+                  Click Here to Upload
+                </Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        <View style={{...styles.cardWrapper, marginTop: 5}}>
+          <View style={{...styles.card, height: 150, alignItems: 'center'}}>
+            <TouchableOpacity
+              onPress={() => {
+                handelPhoto('navigation_system');
+              }}>
+              <View style={{alignItems: 'center'}}>
+                <Text style={{fontWeight: 'bold', fontSize: 20, marginTop: 10}}>
+                  Navigation System (if applicable)
+                </Text>
+                {!navigation_system ? (
+                  <Image
+                    source={require('../../assests/images/navigation_system.png')}
+                    style={{height: 50, width: 50, marginTop: 20}}
+                  />
+                ) : (
+                  <Image
+                    source={{uri: navigation_system.uri}}
+                    style={{height: 50, width: 50, marginTop: 20}}
+                  />
+                )}
+                <Text style={{fontWeight: 'bold', fontSize: 15, marginTop: 10}}>
+                  Click Here to Upload
+                </Text>
+              </View>
+            </TouchableOpacity>
           </View>
         </View>
       </ScrollView>
@@ -57,6 +193,11 @@ function InteriorImages() {
   );
 }
 
+const mapStateToProps = (state) => {
+  return {
+    vin: state.featureReducer.vin,
+  };
+};
 const styles = StyleSheet.create({
   cardWrapper: {
     width: '90%',
@@ -76,4 +217,4 @@ const styles = StyleSheet.create({
     // alignItems: 'center',
   },
 });
-export default InteriorImages;
+export default connect(mapStateToProps)(InteriorImages);

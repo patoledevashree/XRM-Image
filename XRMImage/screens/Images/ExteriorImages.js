@@ -10,18 +10,44 @@ import {
 import ImagePicker from 'react-native-image-picker';
 import axios from 'axios';
 import {baseURL, baseUrl} from '../../shared/config';
-import {submitForm} from '../../shared/ApiEndpoints';
+import {submitImage} from '../../shared/ApiEndpoints';
 import {connect} from 'react-redux';
+import Toast from 'react-native-simple-toast';
 
 function ExteriorImages(props) {
-  const [photo, setPhoto] = useState('');
+  const [front_right_45, setfront_right_45] = useState({
+    front_right_45: {label: '45° Right Front', image: [], type: 'ext'},
+  });
+  const [rear_right_45, setrear_right_45] = useState('');
+  const [rear_left_45, setrear_left_45] = useState('');
+  const [front_left_45, setfront_left_45] = useState('');
+  const [full_driver_side_view, setfull_driver_side_view] = useState('');
+  const [trunk, settrunk] = useState('');
   const handelPhoto = (data) => {
     console.log('photo');
     const options = {};
-    ImagePicker.launchImageLibrary(options, (response) => {
+    ImagePicker.showImagePicker(options, (response) => {
+      // ImagePicker.launchImageLibrary(options, (response) => {
       if (response.uri) {
         console.log(response);
-        setPhoto(response);
+        if (data === 'front_right_45') {
+          setfront_right_45(response);
+        }
+        if (data === 'rear_right_45') {
+          setrear_right_45(response);
+        }
+        if (data === 'rear_left_45') {
+          setrear_left_45(response);
+        }
+        if (data === 'front_left_45') {
+          setfront_left_45(response);
+        }
+        if (data === 'full_driver_side_view') {
+          setfull_driver_side_view(response);
+        }
+        if (data === 'trunk') {
+          settrunk(response);
+        }
         uploadImage(data, response);
       }
     });
@@ -32,19 +58,26 @@ function ExteriorImages(props) {
     var formData = new FormData();
     console.log('response', response);
     const image = 'data:image/jpeg;base64,' + response.data;
-    formData.append(data.toString(), image);
-    console.log(formData);
+    // let obj = {[data]: response.fileName};
+    let obj = {[data]: JSON.stringify(image)};
+    console.log('obj', obj);
+    formData.append(obj);
 
-    axios
-      .put(`${baseURL}/${submitForm}/${props.vin}`, formData, {
-        headers: {'x-api-key': 'MV7PnHh2mC48n9n3oqKW3911T6Ch6gmd7xQJ0JQ6'},
-      })
-      .then((response) => {
-        console.log('response', response);
-      })
-      .catch((err) => {
-        console.log('err', err.response);
-      });
+    console.log(formData);
+    if (props.vin === '') {
+      Toast.show('Please enter Vin Number');
+    } else {
+      axios
+        .put(`${baseURL}/${submitImage}/${props.vin}`, formData, {
+          headers: {'x-api-key': 'MV7PnHh2mC48n9n3oqKW3911T6Ch6gmd7xQJ0JQ6'},
+        })
+        .then((response) => {
+          console.log('response', response);
+        })
+        .catch((err) => {
+          console.log('err', err.response);
+        });
+    }
   };
   return (
     <View>
@@ -53,20 +86,21 @@ function ExteriorImages(props) {
           <View style={{...styles.card, height: 150, alignItems: 'center'}}>
             <TouchableOpacity
               onPress={() => {
-                handelPhoto('front_45_right');
+                handelPhoto('front_right_45');
               }}>
               <View>
                 <Text style={{fontWeight: 'bold', fontSize: 20, marginTop: 10}}>
                   45 {'\u00b0'} Right Front
                 </Text>
-                {!photo.uri ? (
+                {console.log('front', front_right_45)}
+                {!front_right_45.uri ? (
                   <Image
                     source={require('../../assests/images/front_right_45.png')}
                     style={{height: 50, width: 100, marginTop: 30}}
                   />
                 ) : (
                   <Image
-                    source={{uri: photo.uri}}
+                    source={{uri: front_right_45.uri}}
                     style={{height: 50, width: 100, marginTop: 20}}
                   />
                 )}
@@ -88,14 +122,14 @@ function ExteriorImages(props) {
                 <Text style={{fontWeight: 'bold', fontSize: 20, marginTop: 10}}>
                   45 {'\u00b0'} Right Rear
                 </Text>
-                {!photo.uri ? (
+                {!rear_right_45.uri ? (
                   <Image
                     source={require('../../assests/images/rear_right_45.png')}
                     style={{height: 50, width: 100, marginTop: 30}}
                   />
                 ) : (
                   <Image
-                    source={{uri: photo.uri}}
+                    source={{uri: rear_right_45.uri}}
                     style={{height: 50, width: 100, marginTop: 30}}
                   />
                 )}
@@ -106,63 +140,120 @@ function ExteriorImages(props) {
             </TouchableOpacity>
           </View>
         </View>
+
         <View style={{...styles.cardWrapper, marginTop: 5}}>
           <View style={{...styles.card, height: 150, alignItems: 'center'}}>
-            <Text style={{fontWeight: 'bold', fontSize: 20, marginTop: 10}}>
-              45 {'\u00b0'} Left Rear
-            </Text>
-            <Image
-              source={require('../../assests/images/rear_left_45.png')}
-              style={{height: 50, width: 100, marginTop: 30}}
-            />
-            <Text style={{fontWeight: 'bold', fontSize: 15, marginTop: 10}}>
-              Click Here to Upload
-            </Text>
+            <TouchableOpacity
+              onPress={() => {
+                handelPhoto('rear_left_45');
+              }}>
+              <View>
+                <Text style={{fontWeight: 'bold', fontSize: 20, marginTop: 10}}>
+                  45 {'\u00b0'} Left Rear
+                </Text>
+                {!rear_left_45.uri ? (
+                  <Image
+                    source={require('../../assests/images/rear_left_45.png')}
+                    style={{height: 50, width: 100, marginTop: 20}}
+                  />
+                ) : (
+                  <Image
+                    source={{uri: rear_left_45.uri}}
+                    style={{height: 50, width: 100, marginTop: 20}}
+                  />
+                )}
+                <Text style={{fontWeight: 'bold', fontSize: 15, marginTop: 10}}>
+                  Click Here to Upload
+                </Text>
+              </View>
+            </TouchableOpacity>
           </View>
         </View>
 
         <View style={{...styles.cardWrapper, marginTop: 5}}>
           <View style={{...styles.card, height: 150, alignItems: 'center'}}>
-            <Text style={{fontWeight: 'bold', fontSize: 20, marginTop: 10}}>
-              45 {'\u00b0'} Front Left
-            </Text>
-            <Image
-              source={require('../../assests/images/front_left_45.png')}
-              style={{height: 50, width: 100, marginTop: 30}}
-            />
-            <Text style={{fontWeight: 'bold', fontSize: 15, marginTop: 10}}>
-              Click Here to Upload
-            </Text>
+            <TouchableOpacity
+              onPress={() => {
+                handelPhoto('front_left_45');
+              }}>
+              <View>
+                <Text style={{fontWeight: 'bold', fontSize: 20, marginTop: 10}}>
+                  45 {'\u00b0'} Front Left
+                </Text>
+                {!front_left_45.uri ? (
+                  <Image
+                    source={require('../../assests/images/front_left_45.png')}
+                    style={{height: 50, width: 100, marginTop: 30}}
+                  />
+                ) : (
+                  <Image
+                    source={{uri: front_left_45.uri}}
+                    style={{height: 50, width: 100, marginTop: 30}}
+                  />
+                )}
+                <Text style={{fontWeight: 'bold', fontSize: 15, marginTop: 10}}>
+                  Click Here to Upload
+                </Text>
+              </View>
+            </TouchableOpacity>
           </View>
         </View>
 
         <View style={{...styles.cardWrapper, marginTop: 5}}>
           <View style={{...styles.card, height: 150, alignItems: 'center'}}>
-            <Text style={{fontWeight: 'bold', fontSize: 20, marginTop: 10}}>
-              Full Driver Side View
-            </Text>
-            <Image
-              source={require('../../assests/images/full_driver_side_view.png')}
-              style={{height: 50, width: 100, marginTop: 30}}
-            />
-            <Text style={{fontWeight: 'bold', fontSize: 15, marginTop: 10}}>
-              Click Here to Upload
-            </Text>
+            <TouchableOpacity
+              onPress={() => {
+                handelPhoto('full_driver_side_view');
+              }}>
+              <View>
+                <Text style={{fontWeight: 'bold', fontSize: 20, marginTop: 10}}>
+                  Full Driver Side View
+                </Text>
+                {!full_driver_side_view.uri ? (
+                  <Image
+                    source={require('../../assests/images/full_driver_side_view.png')}
+                    style={{height: 50, width: 100, marginTop: 30}}
+                  />
+                ) : (
+                  <Image
+                    source={{uri: full_driver_side_view.uri}}
+                    style={{height: 50, width: 100, marginTop: 30}}
+                  />
+                )}
+                <Text style={{fontWeight: 'bold', fontSize: 15, marginTop: 10}}>
+                  Click Here to Upload
+                </Text>
+              </View>
+            </TouchableOpacity>
           </View>
         </View>
 
         <View style={{...styles.cardWrapper, marginTop: 5}}>
           <View style={{...styles.card, height: 150, alignItems: 'center'}}>
-            <Text style={{fontWeight: 'bold', fontSize: 20, marginTop: 10}}>
-              Trunk
-            </Text>
-            <Image
-              source={require('../../assests/images/trunk.png')}
-              style={{width: 100, marginTop: 30, height: 60}}
-            />
-            <Text style={{fontWeight: 'bold', fontSize: 15, marginTop: 10}}>
-              Click Here to Upload
-            </Text>
+            <TouchableOpacity
+              onPress={() => {
+                handelPhoto('trunk');
+              }}>
+              <View>
+                <Text style={{fontWeight: 'bold', fontSize: 20, marginTop: 10}}>
+                  Trunk
+                </Text>
+                {!trunk.uri ? (
+                  <Image
+                    source={require('../../assests/images/trunk.png')}
+                    style={{width: 100, marginTop: 20, height: 60}}
+                  />
+                ) : (
+                  <Image
+                    source={{uri: trunk.uri}}
+                    style={{width: 100, marginTop: 20, height: 60}}
+                  />
+                )}
+                <Text style={{fontWeight: 'bold', fontSize: 15, marginTop: 10}}>
+                  Click Here to Upload
+                </Text>
+              </View>
+            </TouchableOpacity>
           </View>
         </View>
       </ScrollView>
